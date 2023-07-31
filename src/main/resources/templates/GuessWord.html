@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Guess Word Application</title>
+
+    <link type="text/css" rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="container">
+    <h1>Welcome To The CV Tracker Guess Word Game!</h1>
+    <h2>Please Guess The <span th:text="${maskedGuessedWord}" th:class="guessedWord"></span> Word And Click Submit</h2>
+    <form th:action="@{/guessWord}" method="post" id="submitForm">
+        <p><label>Word: </label><input type="text" name="guessedWordInput" id="guessedWordInput"></p>
+        <input type="submit" value="Enter"  />
+        <input type="hidden" th:value="${guessedWord}" name="guessedWord" id="guessedWord">
+    </form>
+
+</div>
+<script type="text/javascript" th:src="@{/scripts/processResponse.js}">
+</script>
+</body>
+</html>
