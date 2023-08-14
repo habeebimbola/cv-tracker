@@ -18,7 +18,6 @@ class CvTrackerTaskApplicationTests {
 	 void setUp()
 	{
 		guessWordDisplay =	 new GuessWordDisplay();
-
 	}
 
 	@Test
@@ -37,5 +36,12 @@ class CvTrackerTaskApplicationTests {
 	void shouldReturnSwappedResult()
 	{
 		assertEquals("String Swapping Operation","AaAaaA", guessWordDisplay.swapCase("aAaAAa"));
+	}
+
+	@Test
+	@DisplayName(value = "Validating inputs as Anagrams...")
+	public void shouldBeAnagram()
+	{
+		assertTrue("Inputs are not  an anagrams", guessWordDisplay.isAnagram("needs","dense"));
 	}
 }

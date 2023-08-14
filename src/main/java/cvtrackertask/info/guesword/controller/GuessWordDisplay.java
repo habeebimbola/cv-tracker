@@ -446,4 +446,53 @@ public class GuessWordDisplay {
 
          return swapResult;
      }
+
+    public boolean isAnagram(String str1, String str2) {
+        boolean result = false;
+        int length1 = str1.length(), length2 = str2.length(), charCount = 0;
+
+        if( length1 != length2 )
+        {
+            return result;
+        }
+        Map<Character, Integer> charsMap = new HashMap<>();
+
+        for( int index = 0; index < str1.length(); index++ )
+        {
+            Character ch1 =  str1.charAt(index),  ch2 = str2.charAt(index);
+
+            if(!charsMap.containsKey(ch1))
+            {
+                charsMap.put(ch1, 1);
+            }
+            else
+            {
+                 charCount = charsMap.get(ch1);
+                 charsMap.put(ch1, ++charCount);
+            }
+        }
+
+        for(int index = 0; index < length2; index++)
+        {
+            char ch2 = str2.charAt(index);
+
+            if(charsMap.containsKey(ch2))
+            {
+                int count =  charsMap.get(ch2);
+                count--;
+                charsMap.put(ch2, count);
+            }
+        }
+
+
+        for(Character character : charsMap.keySet())
+        {
+            if( charsMap.get(character) != 0 )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
