@@ -6,6 +6,7 @@ import cvtrackertask.info.guesword.service.GuessWordService;
 import java.io.File;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -31,7 +32,6 @@ public class GuessWordDisplay {
                 word.regionMatches(true, 0, "guid", 0, 4),
                 word.compareTo("are")
         );
-
         int[] numbers = {94, 43, 72, 24, 90, 100, 203, 2, 8, 1, 2},
                 nums = {94, 43, 72, 24, 90, 100, 203, 2, 8, 1, 2},
                 cyclic = {3, 8, 9, 7, 6};
@@ -108,7 +108,7 @@ public class GuessWordDisplay {
         System.out.println("Summation");
         System.out.println(sumTotal(5));
 
-        System.out.println("Valid Parentheses "+isVAlidBrackets("(((((((((())))))))))"));
+        System.out.println("Valid Parentheses "+ isValidBrackets("(((((((((({}))))))))))"));
         byte x = 127; int min = Integer.MIN_VALUE;
         x++;
         x++;
@@ -117,6 +117,17 @@ public class GuessWordDisplay {
 
         System.out.printf("Function Call: %s", stringFunction.apply("NIMAT") );
         System.out.println(function(localFunction, 25));
+
+        guessWordController.printCharactersCount("Hi There How are you today?");
+        int arr[] = {2,3,1,5}; int[] vals = {3,4,5,1,3,2}, ass = {3,1,2,4,3};
+        guessWordController.permMissingElem(arr);
+        System.out.printf("Equilibrium %d\n",  guessWordController.tapeEquilibrium(ass));
+        String literal = """
+                How are you today?
+                This is a multiline string
+                Another line of String
+                """;
+        System.out.println(literal);
 
     }
 
@@ -336,7 +347,7 @@ public class GuessWordDisplay {
          return sumTotal(number - 1 ) + number;
      }
 
-     public static boolean isVAlidBrackets(String input)
+     public static boolean isValidBrackets(String input)
      {
          boolean valid = false;
          Stack<Character> stack = new Stack<>();
@@ -354,7 +365,7 @@ public class GuessWordDisplay {
 
                  char top = stack.peek();
 
-                 if((  c == ')' && top == '(') ||((c == '}') &&(top == '(')))
+                 if((  c == ')' && top == '(') || ((c == '}' && top == '{') ))
                  {
                      stack.pop();
                  }
@@ -449,17 +460,18 @@ public class GuessWordDisplay {
 
     public boolean isAnagram(String str1, String str2) {
         boolean result = false;
-        int length1 = str1.length(), length2 = str2.length(), charCount = 0;
+        int length1 = str1.length(), length2 = str2.length(), charCount;
 
         if( length1 != length2 )
         {
             return result;
         }
+
         Map<Character, Integer> charsMap = new HashMap<>();
 
         for( int index = 0; index < str1.length(); index++ )
         {
-            Character ch1 =  str1.charAt(index),  ch2 = str2.charAt(index);
+            Character ch1 =  str1.charAt(index);
 
             if(!charsMap.containsKey(ch1))
             {
@@ -479,13 +491,11 @@ public class GuessWordDisplay {
             if(charsMap.containsKey(ch2))
             {
                 int count =  charsMap.get(ch2);
-                count--;
-                charsMap.put(ch2, count);
+                charsMap.put(ch2, --count);
             }
         }
 
-
-        for(Character character : charsMap.keySet())
+        for(char character : charsMap.keySet())
         {
             if( charsMap.get(character) != 0 )
             {
@@ -494,5 +504,331 @@ public class GuessWordDisplay {
         }
 
         return true;
+    }
+
+    public void printCharactersCount(String input)
+    {
+        Map<Character, Integer> freqMap = new HashMap<>();
+        char[] chars = input.replaceAll("\\s+", "").toLowerCase(Locale.ROOT).toCharArray();
+
+        for(char ch: chars)
+        {
+            if(!freqMap.containsKey(ch))
+            {
+                freqMap.put(ch, 1);
+            }
+            else
+            {
+                Integer count = freqMap.get(ch);
+                freqMap.put(ch, ++count);
+            }
+        }
+
+        for(Character character:freqMap.keySet())
+        {
+           System.out.printf(" %s : %d", character,  freqMap.get(character));
+        }
+        System.out.println();
+        Integer[] nums = {1, 2,4, 5, 7,1 , 2, 3};
+        Set<Integer> integerSet = new HashSet<>(List.of(nums));
+        integerSet.stream().forEach((i)->{
+            System.out.println(i);
+        });
+
+    }
+
+    public int smallestInteger(int[] ints) {
+
+        int size = ints.length, smallest = 1;
+
+        Arrays.sort(ints);
+
+        if(ints[0] < 1 || ints[size - 1] < 1)
+        {
+            return 1;
+        }
+
+        for( int index = 0; index < size; index++)
+        {
+            if(ints[index] == index)
+            {
+                smallest++;
+            }
+        }
+        return smallest;
+    }
+
+    public boolean isMatched(String input) {
+
+        Stack<Character> charStack = new Stack<>();
+
+        for(int index = 0; index < input.length(); index++)
+        {
+            char ch = input.charAt(index);
+
+            if(ch == '{'|| ch == '[' || ch == '(')
+            {
+                charStack.push(ch);
+            }
+            else
+            {
+                if(charStack.isEmpty())
+                {
+                    return false;
+                }
+
+                char popChar = charStack.pop();
+
+                if( popChar == '{' && ch != '}')
+                {
+                    return false;
+                }
+
+                if( popChar == '[' && ch != ']' )
+                {
+                    return  false;
+                }
+
+                if(popChar == '(' && ch != ')')
+                {
+                    return false;
+                }
+
+            }
+        }
+
+        if(!charStack.isEmpty())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int[] cyclicRotate(int[] nums) {
+
+        int[] result = nums;
+        int size = nums.length, temp = 0, swap = 0;
+
+        for(int index = 0; index < size; index++)
+        {
+            if(index == 0 )
+            {
+                temp = result[index];
+                result[index] = result[size - 1];
+            }
+
+            if( index > 0)
+            {
+                swap = result[index];
+                result[index] = temp;
+                temp = swap;
+            }
+        }
+
+        return result;
+    }
+
+    public int longestZeros(int num) {
+        boolean startCount = false;
+        int maxZeros  = 0, zerosCount = 0;
+
+        String binaryString = Integer.toBinaryString(num);
+
+        for(int index =  0; index < binaryString.length(); index++)
+        {
+            char ch = binaryString.charAt(index);
+
+            if(ch == '1' && !startCount)
+            {
+                startCount = true;
+            }
+
+            if(startCount && ch == '0')
+            {
+                ++zerosCount;
+            }
+            if(startCount && ch == '1')
+            {
+                if(zerosCount > maxZeros)
+                {
+                    maxZeros = zerosCount;
+                }
+                zerosCount = 0;
+            }
+        }
+
+
+        return maxZeros;
+    }
+
+    public int oddOccurrence(int[] nums) {
+        int result = 0;
+        int[] arrays = nums;int size = nums.length;
+//        boolean isMatched;
+//
+//        for(int index = 0; index < size; index++)
+//        {
+//            isMatched = false;
+//
+//            for (int row = index + 1; row < size; row++)
+//            {
+//                if(!isMatched && arrays[index] == arrays[row])
+//                {
+//                    arrays[row] = -1;
+//                    arrays[index] = -1;
+//                    isMatched = true;
+//                }
+//            }
+//            if(arrays[index] != -1)
+//             result = arrays[index];
+//        }
+
+
+        Map<Integer, Integer> numMap = new HashMap<>();
+
+        for(int index = 0; index < size; index++)
+        {
+            if(!numMap.containsKey(arrays[index]))
+            {
+                numMap.put(arrays[index], 1);
+            }
+            else
+            {
+                int counter = numMap.get(arrays[index]);
+                numMap.put(arrays[index],++counter);
+            }
+        }
+        for(int key : numMap.keySet())
+        {
+            if( numMap.get(key) % 2 != 0)
+            {
+                result = key;
+            }
+        }
+
+        return result;
+    }
+
+    public int minJump(int position, int destination, int step) {
+        int minJump = 0;
+
+        while(position < destination)
+        {
+            position += step;
+            minJump++;
+        }
+
+        return minJump;
+    }
+
+    public int permMissingElem(int[] nums)
+    {
+        int missing = 1;
+
+        Arrays.sort(nums);
+
+        for(int index = 0; index < nums.length; index++)
+        {
+            if(nums[index] == missing)
+            {
+                missing = nums[index] + 1;
+            }
+        }
+
+        return missing;
+    }
+
+    public int tapeEquilibrium(int[] nums)
+    {
+        int result = 0, total = 0, size = nums.length, tempTotal = 0, smallest = 0;
+
+        for(int index = 1; index < size; index++)
+        {
+            total += nums[index];
+        }
+        smallest = Math.abs(total - nums[0]);
+
+        for(int index = 1; index < size - 1; index++)
+        {
+            total -= nums[index];
+            nums[0] += nums[index];
+
+            smallest = Math.abs(total - nums[0]) < smallest ? Math.abs(total - nums[0]) : smallest ;
+        }
+
+        return smallest;
+    }
+    public int frogRiverOne(int[] position, int destination)
+    {
+        int result = -1;
+        Set<Integer> positionSet = new HashSet<>();
+
+        for(int index = 0; index < position.length; index++)
+        {
+            positionSet.add(position[index]);
+
+            if(positionSet.contains(destination) && positionSet.size() == destination)
+            {
+                return index;
+            }
+        }
+
+        return result;
+    }
+
+    public int frogMore(int[] position, int destination)
+    {
+        int result = -1, size = position.length;
+
+        Map<Integer, Integer> numMap = new HashMap<>();
+
+        for (int index = 0 ; index < size - 1; index++)
+        {
+            numMap.put(position[index] - 1, index);
+        }
+
+        return ( numMap.size() != destination ) ? result : Collections.max(numMap.values());
+    }
+
+    public int permCheck(int nums[])
+    {
+        int result = 1, size = nums.length;
+        Map<Integer, Integer> numMap = new HashMap<>();
+
+        for(int index = 0; index < size; index++)
+        {
+            numMap.put(nums[index], index + 1);
+        }
+
+        for(int index = 1; index <= size; index++)
+        {
+            if(!numMap.containsKey(index))
+            {
+                return 0;
+            }
+        }
+        return result;
+    }
+
+    public int permCheckSet(int[] nums)
+    {
+        int size = nums.length, result = 0;
+        Set<Integer> numSet = new HashSet<>();
+
+        for(int index = 0; index < size; index++)
+        {
+            numSet.add(nums[index]);
+        }
+
+        for(int index = 1; index <= size; index++)
+        {
+            if(!numSet.contains(index))
+            {
+                return result;
+            }
+        }
+        result = 1;
+        return  result;
     }
 }
