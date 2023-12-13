@@ -5,6 +5,8 @@ import cvtrackertask.info.guesword.service.GuessWordService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -13,11 +15,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.*;
 
-//@SpringBootTest
+@SpringBootTest
 class CvTrackerTaskApplicationTests {
 	GuessWordDisplay guessWordDisplay;
 
-	@Mock
+	@MockBean
 	GuessWordService guessWordService;
 
 	@BeforeEach
